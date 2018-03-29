@@ -15,7 +15,7 @@
  *4、设置过单一标签颜色后，多样色失效单一标签颜色优先级要高于多样色属性
  *5  支持设置上下左右的距离但是方法一定要放在-(void)setTagWithTagArray:(NSArray*)arr;之前，否则失效
  *6、祝大家使用愉快如果有bug请指正
-
+ 
  *
  *   邮箱地址15253503932@163.com
  *   github地址：
@@ -36,6 +36,13 @@
  *  设置单一颜色
  */
 @property(nonatomic)UIColor*signalTagColor;
+
+//设置选中的背景颜色颜色(默认是橘黄色)
+@property(nonatomic)UIColor * selTagColor;
+
+//设置选中的字体颜色
+@property(nonatomic)UIColor * selTagTitleColor;
+
 /**
  *  回调统计选中tag
  */
@@ -45,8 +52,18 @@
  *  是否可点击
  */
 @property(nonatomic) BOOL canTouch;
-/**
 
+//设置圆弧度
+@property(nonatomic,assign) CGFloat tagCornerRadius;
+
+//设置边框颜色
+@property(nonatomic)UIColor * tagBorderColor;
+
+//设置边框宽度
+@property(nonatomic,assign) CGFloat tagBorderWidth;
+
+/**
+ 
  *  限制点击个数
  *  0->不限制
  *  不设置此属性默认不限制
@@ -68,3 +85,4 @@
 -(void)setMarginBetweenTagLabel:(CGFloat)Margin AndBottomMargin:(CGFloat)BottomMargin;
 
 @end
+

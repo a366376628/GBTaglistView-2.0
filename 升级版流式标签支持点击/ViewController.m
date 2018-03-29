@@ -12,8 +12,8 @@
 #define ScreenHeight  [UIScreen mainScreen].bounds.size.height
 @interface ViewController (){
     
-        NSArray*strArray;//保存标签数据的数组
-        GBTagListView*_tempTag;
+    NSArray*strArray;//保存标签数据的数组
+    GBTagListView*_tempTag;
     
 }
 @end
@@ -22,9 +22,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    strArray=@[@"大好人",@"自定义流式标签",@"github",@"code4app",@"已婚",@"阳光开朗",@"慷慨大方帅气身材好",@"仗义",@"值得一交的朋友",@"值得一交的朋友",@"值得的交",@"值得一交的朋友",@"值得一交的朋友",@"大好人",@"自定义流式标签",@"github",@"code4app",@"已婚"];
+    strArray=@[@"大好人313123123123123213",@"自定义流式标签",@"github",@"code4app",@"已婚",@"阳光开朗",@"慷慨大方帅气身材好",@"仗义",@"值得一交的朋友",@"值得一交的朋友",@"值得的交",@"值得一交的朋友",@"值得一交的朋友",@"大好人",@"自定义流式标签",@"github",@"code4app",@"已婚"];
     
     GBTagListView *tagList=[[GBTagListView alloc]initWithFrame:CGRectMake(0, 80, ScreenWidth, 0)];
+    
+    //view的背景
+    tagList.GBbackgroundColor = UIColor.whiteColor;
+    
+    //选中的颜色
+    tagList.selTagColor = UIColor.whiteColor;
+    
+    //选中的圆弧
+    tagList.tagCornerRadius = 1;
+    
+    //设置边框颜色
+    tagList.tagBorderColor = UIColor.grayColor;
+    
+    //设置边框宽度
+    tagList.tagBorderWidth = 0.5;
+    
+    //设置选中titleColor
+    tagList.selTagTitleColor = UIColor.redColor;
+    
     /**允许点击 */
     tagList.canTouch=YES;
     /**可以控制允许点击的标签数 */
@@ -54,8 +73,8 @@
     tip.textAlignment=NSTextAlignmentCenter;
     tip.font=[UIFont boldSystemFontOfSize:18];
     [self.view addSubview:tip];
-
-
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -64,3 +83,4 @@
 }
 
 @end
+

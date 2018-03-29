@@ -24,7 +24,7 @@ alpha:1.0]
     CGFloat _KBottomMargin;//上下tag之间的间距
     NSInteger _kSelectNum;//实际选中的标签数
     UIButton*_tempBtn;//临时保存对象
-
+    
 }
 @end
 @implementation GBTagListView
@@ -38,7 +38,7 @@ alpha:1.0]
         _tagArr=[[NSMutableArray alloc]init];
         /**默认是多选模式 */
         self.isSingleSelect=NO;
-
+        
     }
     return self;
     
@@ -48,7 +48,7 @@ alpha:1.0]
     previousFrame = CGRectZero;
     [_tagArr addObjectsFromArray:arr];
     [arr enumerateObjectsUsingBlock:^(NSString*str, NSUInteger idx, BOOL *stop) {
-    
+        
         UIButton*tagBtn=[UIButton buttonWithType:UIButtonTypeCustom];
         tagBtn.frame=CGRectZero;
         
@@ -67,21 +67,24 @@ alpha:1.0]
             tagBtn.userInteractionEnabled=NO;
         }
         [tagBtn setTitleColor:R_G_B_16(0x818181) forState:UIControlStateNormal];
-        [tagBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+        [tagBtn setTitleColor:self.selTagTitleColor forState:UIControlStateSelected];
         tagBtn.titleLabel.font=[UIFont boldSystemFontOfSize:15];
         [tagBtn addTarget:self action:@selector(tagBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         [tagBtn setTitle:str forState:UIControlStateNormal];
         tagBtn.tag=KBtnTag+idx;
-        tagBtn.layer.cornerRadius=13;
-        tagBtn.layer.borderColor=R_G_B_16(0x818181).CGColor;
-        tagBtn.layer.borderWidth=0.3;
+        //        tagBtn.layer.cornerRadius=13;
+        tagBtn.layer.cornerRadius = self.tagCornerRadius;
+        
+        tagBtn.layer.borderColor=[self.tagBorderColor CGColor];
+        tagBtn.layer.borderWidth=self.tagBorderWidth;
+        
         tagBtn.clipsToBounds=YES;
         NSDictionary *attrs = @{NSFontAttributeName : [UIFont boldSystemFontOfSize:15]};
         CGSize Size_str=[str sizeWithAttributes:attrs];
         Size_str.width += HORIZONTAL_PADDING*3;
         Size_str.height += VERTICAL_PADDING*3;
         CGRect newRect = CGRectZero;
-
+        
         if(_KTagMargin&&_KBottomMargin){
             
             if (previousFrame.origin.x + previousFrame.size.width + Size_str.width + _KTagMargin > self.bounds.size.width) {
@@ -94,27 +97,27 @@ alpha:1.0]
                 
             }
             [self setHight:self andHight:totalHeight+Size_str.height + _KBottomMargin];
-
+            
             
         }else{
-        if (previousFrame.origin.x + previousFrame.size.width + Size_str.width + LABEL_MARGIN > self.bounds.size.width) {
-            
-            newRect.origin = CGPointMake(10, previousFrame.origin.y + Size_str.height + BOTTOM_MARGIN);
-            totalHeight +=Size_str.height + BOTTOM_MARGIN;
-        }
-        else {
-            newRect.origin = CGPointMake(previousFrame.origin.x + previousFrame.size.width + LABEL_MARGIN, previousFrame.origin.y);
-            
-        }
-        [self setHight:self andHight:totalHeight+Size_str.height + BOTTOM_MARGIN];
+            if (previousFrame.origin.x + previousFrame.size.width + Size_str.width + LABEL_MARGIN > self.bounds.size.width) {
+                
+                newRect.origin = CGPointMake(10, previousFrame.origin.y + Size_str.height + BOTTOM_MARGIN);
+                totalHeight +=Size_str.height + BOTTOM_MARGIN;
+            }
+            else {
+                newRect.origin = CGPointMake(previousFrame.origin.x + previousFrame.size.width + LABEL_MARGIN, previousFrame.origin.y);
+                
+            }
+            [self setHight:self andHight:totalHeight+Size_str.height + BOTTOM_MARGIN];
         }
         newRect.size = Size_str;
         [tagBtn setFrame:newRect];
         previousFrame=tagBtn.frame;
         [self setHight:self andHight:totalHeight+Size_str.height + BOTTOM_MARGIN];
         [self addSubview:tagBtn];
-
-
+        
+        
     }];
     if(_GBbackgroundColor){
         
@@ -126,7 +129,7 @@ alpha:1.0]
         
     }
     
-
+    
 }
 #pragma mark-改变控件高度
 - (void)setHight:(UIView *)view andHight:(CGFloat)hight
@@ -145,7 +148,7 @@ alpha:1.0]
             
             _tempBtn.selected=NO;
             _tempBtn.backgroundColor=[UIColor whiteColor];
-             button.selected=YES;
+            button.selected=YES;
             _tempBtn=button;
             
         }
@@ -156,9 +159,21 @@ alpha:1.0]
     }
     
     if(button.selected==YES){
-        button.backgroundColor=[UIColor orangeColor];
+        //设置选中的颜色
+        if (self.selTagColor != nil){
+            button.backgroundColor = self.selTagColor;
+            
+            //把边框颜色也一块改了
+            button.layer.borderColor = [self.selTagTitleColor CGColor];
+            
+        }else{
+            button.backgroundColor=[UIColor orangeColor];
+        }
     }else if (button.selected==NO){
+        //还原颜色
         button.backgroundColor=[UIColor whiteColor];
+        
+        
     }
     
     [self didSelectItems];
@@ -166,35 +181,38 @@ alpha:1.0]
     
 }
 -(void)didSelectItems{
-
+    
     NSMutableArray*arr=[[NSMutableArray alloc]init];
     
     for(UIView*view in self.subviews){
-
+        
         if([view isKindOfClass:[UIButton class]]){
-
+            
             UIButton*tempBtn=(UIButton*)view;
             tempBtn.enabled=YES;
             if (tempBtn.selected==YES) {
                 [arr addObject:_tagArr[tempBtn.tag-KBtnTag]];
                 _kSelectNum=arr.count;
+            }else{
+                //还原边框颜色
+                tempBtn.layer.borderColor=[self.tagBorderColor CGColor];
             }
         }
     }
     if(_kSelectNum==self.canTouchNum){
         
         for(UIView*view in self.subviews){
-
+            
             UIButton*tempBtn=(UIButton*)view;
-
-         if (tempBtn.selected==YES) {
-             tempBtn.enabled=YES;
-             
-         }else{
-             tempBtn.enabled=NO;
-             
-         }
-    }
+            
+            if (tempBtn.selected==YES) {
+                tempBtn.enabled=YES;
+                
+            }else{
+                tempBtn.enabled=NO;
+                
+            }
+        }
     }
     self.didselectItemBlock(arr);
     
@@ -204,7 +222,8 @@ alpha:1.0]
     
     _KTagMargin=Margin;
     _KBottomMargin=BottomMargin;
-
+    
 }
 
 @end
+
